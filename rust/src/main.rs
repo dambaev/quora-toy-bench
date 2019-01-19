@@ -3,7 +3,7 @@
 use std::thread;
 extern crate test;
 
-const N:u32 = 10000000;
+const N:u32 = 50000000;
 const H:f64 = 1.0f64 / (1.0f64 + N as f64);
 
 fn calc_part( per_thread: u32, start: u32) -> f64{

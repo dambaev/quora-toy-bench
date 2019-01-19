@@ -24,9 +24,10 @@ dependencies:
 - parallel
 - async
 - ghc-prim
+- clock
 
 default-extensions:
-- BangPatterns
+- Strict
 library:
   source-dirs: src
   c-sources: src/stub.c

@@ -19,7 +19,7 @@ calc_part:: Int-> Int-> Int-> Double
 calc_part n per_thread start = c_calc_part (fromIntegral n) (fromIntegral per_thread) (fromIntegral start)
 
 n :: Int
-n = 10000000
+n = 50000000
 
 calcSingleFFI:: IO Double
 calcSingleFFI = pure $! 4.0 * calc_part n n 0

@@ -6,9 +6,9 @@
 
 #include <omp.h>
 
-// 10 million
+// 50 million
 //
-#define N 10000000
+#define N 50000000
 
 double calc_multi(){
   // step size
@@ -43,10 +43,10 @@ double calc_single(){
 int main(){
   double timeacc = 0.0d;
   double times = 0;
-  for( ; times < 100; times ++){
-    timeacc += calc_single();
-  }
-  printf( "single avg %7.5f\n", timeacc / times);
+//  for( ; times < 100; times ++){
+//    timeacc += calc_single();
+//  }
+//  printf( "single avg %7.5f\n", timeacc / times);
   for( times = 0.0d, timeacc = 0.0d; times < 100; times ++){
     timeacc += calc_multi();
   }
