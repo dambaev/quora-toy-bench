@@ -43,10 +43,10 @@ double calc_single(){
 int main(){
   double timeacc = 0.0d;
   double times = 0;
-//  for( ; times < 100; times ++){
-//    timeacc += calc_single();
-//  }
-//  printf( "single avg %7.5f\n", timeacc / times);
+  for( ; times < 100; times ++){
+    timeacc += calc_single();
+  }
+  printf( "single avg %7.5f\n", timeacc / times);
   for( times = 0.0d, timeacc = 0.0d; times < 100; times ++){
     timeacc += calc_multi();
   }
