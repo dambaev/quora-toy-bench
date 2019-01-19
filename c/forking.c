@@ -71,9 +71,11 @@ double calc_forking( int workers){
 int main(int argc, char ** argv){
 	double ret = 0.0d;
 	double times = 0;
-	int workers = 0;
+	int workers = 1;
 
-	sscanf( argv[1], "%d", &workers);
+	if( argc > 1){
+		sscanf( argv[1], "%d", &workers);
+	}
 	printf( "workers %d\n", workers);
 	// start timer
 	double t = omp_get_wtime();
