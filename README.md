@@ -1,3 +1,5 @@
+testing on i5-7200u:
+
 	$ cat /proc/cpuinfo
 	model name	: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
 	model name	: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
@@ -74,6 +76,91 @@
 	test tests::bench_cuncurrent4 ... bench:  53,888,661 ns/iter (+/- 4,632,609)
 	test tests::bench_cuncurrent8 ... bench:  55,769,549 ns/iter (+/- 3,299,461)
 	test tests::bench_single      ... bench: 107,007,353 ns/iter (+/- 2,192,505)
+
+	test result: ok. 0 passed; 0 failed; 0 ignored; 3 measured; 0 filtered out
+
+testing on AMD FX-8350 8-core:
+
+	$ cat /proc/cpuinfo
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+	model name	: AMD FX(tm)-8350 Eight-Core Processor
+
+	$ cd c; make; ./test; ./test_noopt; ./forking 8
+	single avg 0.07799
+	multi avg 0.07578
+
+	single avg 0.29753
+	multi avg 0.05664
+
+	workers 8
+	multi avg 0.07611, 3.141593
+
+	$ cd haskell; stack bench
+	threads avaialble: 8
+	benchmarking idiomatic fork 8
+	time                 47.11 ms   (45.78 ms .. 47.95 ms)
+			     0.999 R²   (0.997 R² .. 1.000 R²)
+	mean                 48.51 ms   (47.87 ms .. 50.15 ms)
+	std dev              2.128 ms   (502.1 μs .. 3.698 ms)
+	variance introduced by outliers: 14% (moderately inflated)
+
+	benchmarking ffi fork 8
+	time                 73.97 ms   (72.91 ms .. 74.90 ms)
+			     0.999 R²   (0.998 R² .. 1.000 R²)
+	mean                 74.69 ms   (74.02 ms .. 75.50 ms)
+	std dev              1.409 ms   (892.4 μs .. 2.089 ms)
+
+	benchmarking idiomatic async 8
+	time                 46.35 ms   (45.68 ms .. 46.95 ms)
+			     1.000 R²   (0.999 R² .. 1.000 R²)
+	mean                 46.57 ms   (46.21 ms .. 46.96 ms)
+	std dev              767.8 μs   (527.9 μs .. 1.155 ms)
+
+	benchmarking ffi async 8
+	time                 45.99 ms   (44.93 ms .. 47.27 ms)
+			     0.999 R²   (0.998 R² .. 1.000 R²)
+	mean                 48.00 ms   (47.33 ms .. 48.73 ms)
+	std dev              1.393 ms   (893.2 μs .. 1.965 ms)
+
+	benchmarking idiomatic parallel 8
+	time                 57.63 ms   (56.52 ms .. 59.17 ms)
+			     0.998 R²   (0.994 R² .. 1.000 R²)
+	mean                 58.41 ms   (57.68 ms .. 59.55 ms)
+	std dev              1.546 ms   (1.289 ms .. 1.914 ms)
+
+	benchmarking ffi parallel 8
+	time                 68.59 ms   (61.90 ms .. 74.05 ms)
+			     0.989 R²   (0.979 R² .. 0.998 R²)
+	mean                 68.28 ms   (65.83 ms .. 70.38 ms)
+	std dev              3.879 ms   (2.914 ms .. 5.119 ms)
+	variance introduced by outliers: 17% (moderately inflated)
+
+	benchmarking idiomatic single
+	time                 344.2 ms   (343.3 ms .. 345.1 ms)
+			     1.000 R²   (1.000 R² .. 1.000 R²)
+	mean                 344.3 ms   (344.1 ms .. 344.5 ms)
+	std dev              226.6 μs   (153.7 μs .. 276.8 μs)
+	variance introduced by outliers: 19% (moderately inflated)
+
+	benchmarking ffi single
+	time                 343.8 ms   (342.2 ms .. 345.2 ms)
+			     1.000 R²   (1.000 R² .. 1.000 R²)
+	mean                 346.1 ms   (345.0 ms .. 347.5 ms)
+	std dev              1.401 ms   (505.2 μs .. 1.903 ms)
+	variance introduced by outliers: 19% (moderately inflated)
+
+
+	$ cd rust; cargo +nightly bench
+	running 3 tests
+	test tests::bench_cuncurrent4 ... bench:  62,867,011 ns/iter (+/- 6,838,079)
+	test tests::bench_cuncurrent8 ... bench:  46,091,022 ns/iter (+/- 507,185)
+	test tests::bench_single      ... bench: 191,944,004 ns/iter (+/- 6,450,561)
 
 	test result: ok. 0 passed; 0 failed; 0 ignored; 3 measured; 0 filtered out
 
