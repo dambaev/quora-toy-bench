@@ -19,17 +19,17 @@ calcParallel threads = 4.0 * (sum $! parMap rdeepseq (calcPart perThread) ranges
     ranges = [ i*perThread | i <- [0..(threads-1)]]
 
 calcPart:: Int-> Int-> Double
-calcPart (I# perThread) (I# start) = D# (loop 0.0## start)
+calcPart (I# perThread) (I# start) = D# (loop 0.0## (int2Double# start))
   where
     I# n' = n
     h:: Double#
     h = 1.0## /## (int2Double# (1# +# n'))
-    to = start +# perThread
-    loop acc i = case i ==# to of
+    to = int2Double# (start +# perThread)
+    loop acc i = case i ==## to of
                      1# -> acc
-                     _  -> loop (acc +## h *## (sqrtDouble# (1.0## -## x *## x))) (i +# 1#)
+                     _  -> loop (acc +## h *## (sqrtDouble# (1.0## -## x *## x))) (i +## 1.0##)
         where
-          x = (int2Double# i) *## h
+          x = i *## h
 
 calcAsync:: Int-> IO Double
 calcAsync threads = do
