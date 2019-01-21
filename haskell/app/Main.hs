@@ -4,7 +4,7 @@ import Data.IORef
 import Control.Monad
 import System.Clock
 import Control.Concurrent
-import Lib
+import Lib1
 
 main :: IO ()
 main = do

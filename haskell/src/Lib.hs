@@ -12,12 +12,6 @@ import GHC.Types
 n :: Int
 n = 50000000
 
-calcParallel:: Int-> Double
-calcParallel threads = 4.0 * (sum $! parMap rdeepseq (calcPart perThread) ranges)
-  where
-    perThread = n `div` threads
-    ranges = [ 0..(threads-1)]
-
 calcPart:: Int-> Int-> Double
 calcPart (I# perThread) (I# index) = D# (loop 0.0## (int2Double# start))
   where
@@ -32,27 +26,27 @@ calcPart (I# perThread) (I# index) = D# (loop 0.0## (int2Double# start))
       where
         x = i *## h
 
-calcAsync:: Int-> IO Double
-calcAsync threads = do
-  rets <- A.mapConcurrently worker range
-  pure $! 4.0 * sum rets
+calcParallel:: Int-> Double
+calcParallel threads = sum $! parMap rdeepseq (calcPart perThread) ranges
   where
-    worker x = do
-      pure $! calcPart perThread x
+    perThread = n `div` threads
+    ranges = [ 0..(threads-1)]
+
+calcAsync:: Int-> IO Double
+calcAsync threads = A.mapConcurrently worker range >>= \res-> pure $! sum res
+  where
+    worker x = pure $! calcPart perThread x
     perThread = n `div` threads
     range = [0..threads-1]
 
 calcFork:: Int-> IO Double
-calcFork workers = do
-  results <- replicateM workers newEmptyMVar
-  foldM_ (\i result-> do
-                forkIO (worker result i)
-                pure (i + 1)
-              ) 0 results
-  sum <$> mapM takeMVar results
+calcFork workers =
+  fork_workers [] 0 >>= mapM takeMVar >>= \res-> pure $! sum res
   where
-    worker result i = do
-      let ret = calcPart per_worker i
-      putMVar result ret
+    fork_workers acc n | n == workers = pure acc
+    fork_workers acc n = do
+      result <- newEmptyMVar
+      forkIO (putMVar result $! calcPart per_worker n)
+      fork_workers (result:acc) (n+1)
     per_worker = n `div` workers
 
