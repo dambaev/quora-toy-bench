@@ -33,6 +33,8 @@ library:
   ghc-options:
   - -O2
   - -optc-O3
+  - -fno-full-laziness
+  - -optc-ffast-math
 
 executables:
   quora-exe:
@@ -41,6 +43,8 @@ executables:
     ghc-options:
     - -O2
     - -optc-O3
+    - -fno-full-laziness
+    - -optc-ffast-math
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
@@ -68,6 +72,8 @@ benchmarks:
     ghc-options:
     - -O2
     - -optc-O3
+    - -fno-full-laziness
+    - -optc-ffast-math
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
