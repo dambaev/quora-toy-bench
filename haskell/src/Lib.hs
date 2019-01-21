@@ -16,20 +16,21 @@ calcParallel:: Int-> Double
 calcParallel threads = 4.0 * (sum $! parMap rdeepseq (calcPart perThread) ranges)
   where
     perThread = n `div` threads
-    ranges = [ i*perThread | i <- [0..(threads-1)]]
+    ranges = [ 0..(threads-1)]
 
 calcPart:: Int-> Int-> Double
-calcPart (I# perThread) (I# start) = D# (loop 0.0## (int2Double# start))
+calcPart (I# perThread) (I# index) = D# (loop 0.0## (int2Double# start))
   where
     I# n' = n
     h:: Double#
+    start = index *# perThread
     h = 1.0## /## (int2Double# (1# +# n'))
     to = int2Double# (start +# perThread)
     loop acc i = case i ==## to of
-                     1# -> acc
+                     1# -> 4.0## *## acc
                      _  -> loop (acc +## h *## (sqrtDouble# (1.0## -## x *## x))) (i +## 1.0##)
-        where
-          x = i *## h
+      where
+        x = i *## h
 
 calcAsync:: Int-> IO Double
 calcAsync threads = do
@@ -37,26 +38,21 @@ calcAsync threads = do
   pure $! 4.0 * sum rets
   where
     worker x = do
-      let start = x * perThread
-      pure $! calcPart perThread start
+      pure $! calcPart perThread x
     perThread = n `div` threads
     range = [0..threads-1]
 
 calcFork:: Int-> IO Double
 calcFork workers = do
   results <- replicateM workers newEmptyMVar
-  let index_results = zip range results
-  foldM (\_ (i,result)-> do
-                let start = i * per_worker
-                forkIO (worker result start)
-                pure ()
-              ) () index_results
-  ress <- mapM takeMVar results
-  pure $! 4.0 * sum ress
+  foldM_ (\i result-> do
+                forkIO (worker result i)
+                pure (i + 1)
+              ) 0 results
+  sum <$> mapM takeMVar results
   where
-    range = [ 0 .. (workers - 1)]
-    worker result x = do
-      let ret = calcPart per_worker x
+    worker result i = do
+      let ret = calcPart per_worker i
       putMVar result ret
     per_worker = n `div` workers
 

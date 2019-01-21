@@ -9,9 +9,10 @@ import Lib
 main :: IO ()
 main = do
   let n = 100
+      range = [1 .. n]
   threads <- getNumCapabilities
   start <- getTime MonotonicRaw
-  ret <- foldM (\_ _-> calcFork threads) 0.0 [1 .. n]
+  ret <- foldM (\_ _-> calcFork threads) 0.0 range
   end <- getTime MonotonicRaw
   let diff = fromIntegral $! toNanoSecs $! diffTimeSpec end start
   print $! "ns = " ++ (show $! diff `div` n)
