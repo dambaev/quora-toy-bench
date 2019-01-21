@@ -30,7 +30,6 @@ default-extensions:
 - Strict
 library:
   source-dirs: src
-  c-sources: src/stub.c
   ghc-options:
   - -O2
   - -optc-O3
