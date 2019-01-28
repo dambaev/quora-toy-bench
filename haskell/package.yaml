@@ -33,6 +33,7 @@ library:
   ghc-options:
   - -O2
   - -optc-O3
+  - -fllvm
   - -fno-full-laziness
   - -optc-ffast-math
 
@@ -43,6 +44,7 @@ executables:
     ghc-options:
     - -O2
     - -optc-O3
+    - -fllvm
     - -fno-full-laziness
     - -optc-ffast-math
     - -threaded
@@ -72,6 +74,7 @@ benchmarks:
     ghc-options:
     - -O2
     - -optc-O3
+    - -fllvm
     - -fno-full-laziness
     - -optc-ffast-math
     - -threaded
