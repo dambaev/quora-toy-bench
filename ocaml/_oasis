@@ -1,0 +1,14 @@
+OASISFormat: 0.4
+Name:        toy
+Version:     0.1
+Synopsis:    toy bench
+Authors:     
+License:     GPL-3.0
+
+Executable bench
+  Path:       src
+  BuildTools: ocamlbuild
+  MainIs:     bench.ml
+  CompiledObject: best
+  BuildDepends: threads
+  
