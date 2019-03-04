@@ -51,6 +51,19 @@ stats for Intel Core-i5 7200u
 
 	test result: ok. 0 passed; 0 failed; 0 ignored; 3 measured; 0 filtered out
 
+	$ cd ocaml; oasis setup -setup-update dynamic; ocaml ./setup.ml -configure; ocaml ./setup.ml -build; /usr/bin/time ./bench.native 1; /usr/bin/time ./bench.native 4
+
+	threads 1
+	3.141593
+	0.23user 0.00system 0:00.23elapsed 99%CPU (0avgtext+0avgdata 4836maxresident)k
+	0inputs+0outputs (0major+691minor)pagefaults 0swaps
+	
+	threads 4
+	3.141593
+	0.24user 0.01system 0:00.25elapsed 98%CPU (0avgtext+0avgdata 4844maxresident)k
+	0inputs+0outputs (0major+704minor)pagefaults 0swaps
+
+
 stats for AMD FX-8350
 
 	$ cat /proc/cpuinfo | grep name
