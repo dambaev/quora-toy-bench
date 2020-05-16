@@ -87,6 +87,7 @@ fn
           loop( rest, list_vt_cons( pval, acc)) where {
             var pval:double = 0.0
             val read = $extfcall(int, "read", channel, addr@pval, sizeof<double>)
+            val () = $extfcall(void, "close", channel)
           }
         | ~list_vt_nil() => acc
   }
@@ -116,6 +117,7 @@ fun
                 val v = calcPart( per_thread, worker)
                 var r = v
                 val _ = $extfcall( int, "write", write, addr@r, sizeof<double>)
+                val () = $extfcall( void, "close", write)
               }
             else ()
           val _ = athread_create_cloptr( tid, thread) //alloc
@@ -132,28 +134,30 @@ implement main0 (argc, argv) =
   if argc < 2
   then usage ()
   else
-    let val arg: int = g1ofg0( $extfcall( int, "atoi", argv_get_at(argv, 1))) in
+    let
+      val arg: int = g1ofg0( $extfcall( int, "atoi", argv_get_at(argv, 1)))
+    in
       if arg > 0
       then println!("pi = ", result, ", time = ", avg_time, "\n") where { // alloc
-        val n = 100
-        fun
-          loop
-          {n: nat} {m:nat | m > 0}
-          .<n>.
-          ( i: int n
-          , workers: int m
-          , result: double
-          , total_time: double
-          ): (double, double) =
-            if i = 0
-            then (result, total_time / n)
-            else loop( i-1, workers, result1, total_time + (time1-time0))
-              where {
-                val time0 = omp_get_wtime()
-                val result1 = spawn( workers)
-                val time1 = omp_get_wtime()
-              }
-        val (result, avg_time) = loop( n, arg, 0.0, 0.0)
-      }
+          val n = 100
+          fun
+            loop
+            {n: nat} {m:nat | m > 0}
+            .<n>.
+            ( i: int n
+            , workers: int m
+            , result: double
+            , total_time: double
+            ): (double, double) =
+              if i = 0
+              then (result, total_time / n)
+              else loop( i-1, workers, result1, total_time + (time1-time0))
+                where {
+                  val time0 = omp_get_wtime()
+                  val result1 = spawn( workers)
+                  val time1 = omp_get_wtime()
+                }
+          val (result, avg_time) = loop( n, arg, 0.0, 0.0)
+        }
       else usage ()
     end
